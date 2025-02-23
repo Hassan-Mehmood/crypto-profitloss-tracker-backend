@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from 'src/prisma.service';
 
@@ -11,39 +16,33 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     try {
-      const userExists = await this.findUser(email, username);
-
-      console.log('User exists: ', userExists ? true : false);
-
-      if (userExists) {
-        throw new Error('User already exists');
-      }
-
       const user = await this.prisma.user.create({
         data: {
           username: username,
           email: email,
           password: hashedPassword,
         },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
 
-      const { password, ...newUser } = user;
-
-      console.log('Password: ', password);
-
-      return newUser;
+      return user;
     } catch (error) {
-      throw new Error(error.message);
-    }
-  }
+      if (error instanceof PrismaClientKnownRequestError) {
+        // P2002: Unique constraint failed
+        // Throwing error if user already exists
+        if (error.code === 'P2002') {
+          throw new ConflictException('User already exists');
+        }
+      }
 
-  async findUser(email: string, username: string) {
-    console.log('Checking for existing user');
-    return this.prisma.user.findUnique({
-      where: {
-        email: email,
-        username: username,
-      },
-    });
+      console.error('Error during signup:', error);
+      throw new InternalServerErrorException('Failed to create user account');
+    }
   }
 }
