@@ -1,6 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UsePipes } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { UsersService } from './users.service';
+import { ZodValidationPipe } from './pipes/zodValidationPipe';
+import { SignupUserDto, signupUserSchema } from './schemas/signupUserSchema';
 
 @Controller('users')
 export class UsersController {
@@ -10,9 +12,8 @@ export class UsersController {
   ) {}
 
   @Post('/signup')
-  async signUp(
-    @Body() body: { email: string; username: string; password: string },
-  ) {
+  @UsePipes(new ZodValidationPipe(signupUserSchema))
+  async signUp(@Body() body: SignupUserDto) {
     const response = await this.userService.signUp(
       body.email,
       body.username,
