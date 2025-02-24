@@ -3,6 +3,8 @@ import {
   UnauthorizedException,
   Injectable,
   InternalServerErrorException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcryptjs';
@@ -49,32 +51,51 @@ export class UsersService {
     }
   }
 
-  async signin({ username, password }: SigninUserDto) {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          username: username,
-        },
-      });
+  signin(req: any) {
+    return {
+      user: req.user,
+      msg: 'User logged in',
+    };
+  }
 
-      if (!user) {
-        throw new UnauthorizedException('Username does not exists');
-      }
+  // async signin({ username, password }: SigninUserDto) {
+  //   try {
+  //     const user = await this.prisma.user.findUnique({
+  //       where: {
+  //         username: username,
+  //       },
+  //     });
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+  //     if (!user) {
+  //       throw new UnauthorizedException('Username does not exists');
+  //     }
 
-      if (!isPasswordValid) {
-        throw new UnauthorizedException('Username or password is incorrect');
-      }
+  //     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-      return user;
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        throw error;
-      }
+  //     if (!isPasswordValid) {
+  //       throw new UnauthorizedException('Username or password is incorrect');
+  //     }
 
-      console.error('Error during signin:', error);
-      throw new InternalServerErrorException('Failed to sign in');
+  //     return user;
+  //   } catch (error) {
+  //     if (error instanceof UnauthorizedException) {
+  //       throw error;
+  //     }
+
+  //     console.error('Error during signin:', error);
+  //     throw new InternalServerErrorException('Failed to sign in');
+  //   }
+  // }
+
+  async findByUsername(username: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { username: username },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+
+    return user;
   }
 }
