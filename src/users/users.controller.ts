@@ -7,20 +7,15 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
 import { UsersService } from './users.service';
 import { ZodValidationPipe } from './pipes/zodValidationPipe';
 import { SignupUserDto, signupUserSchema } from './schemas/signupUserSchema';
-// import { signinUserSchema } from './schemas/signinUserSchema';
 import { LocalAuthGuard } from 'src/auth/gaurds/local.auth.gaurd';
 import { AuthenticatedGuard } from 'src/auth/gaurds/authenticated.gaurd';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private prisma: PrismaService,
-    private userService: UsersService,
-  ) {}
+  constructor(private userService: UsersService) {}
 
   @Post('/signup')
   @UsePipes(new ZodValidationPipe(signupUserSchema))
