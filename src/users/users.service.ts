@@ -42,7 +42,9 @@ export class UsersService {
         // P2002: Unique constraint failed
         // Throwing error if user already exists
         if (error.code === 'P2002') {
-          throw new ConflictException('User already exists');
+          throw new ConflictException(
+            'User with this username and email already exists',
+          );
         }
       }
 

@@ -21,7 +21,7 @@ export class UsersController {
   @UsePipes(new ZodValidationPipe(signupUserSchema))
   async signUp(@Body() body: SignupUserDto) {
     const response = await this.userService.signUp(body);
-
+    console.log('Signup response', response);
     return response;
   }
 

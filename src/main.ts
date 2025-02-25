@@ -8,6 +8,11 @@ async function bootstrap() {
 
   const PORT = process.env.PORT ?? 3001;
 
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  });
+
   app.use(
     session({
       secret: process.env.SESSION_SECRET!,
