@@ -11,13 +11,24 @@ async function bootstrap() {
   app.enableCors({
     origin: 'http://localhost:3000',
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.use(
     session({
+      name: 'userCookie',
       secret: process.env.SESSION_SECRET!,
       resave: false,
       saveUninitialized: false,
+      cookie: {
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        domain:
+          process.env.NODE_ENV === 'development' ? 'localhost' : undefined,
+      },
     }),
   );
 
