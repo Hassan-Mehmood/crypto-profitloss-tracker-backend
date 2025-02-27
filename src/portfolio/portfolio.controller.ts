@@ -7,7 +7,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PortfolioService } from './portfolio.service';
-import { AddCoinDto, CreatePortfolioDto } from './dto/portfolioControllerDto';
+import {
+  AddCoinDto,
+  AddTransactionDto,
+  CreatePortfolioDto,
+} from './dto/portfolioControllerDto';
 import { AuthenticatedGuard } from 'src/auth/gaurds/authenticated.gaurd';
 
 @Controller('portfolio')
@@ -34,5 +38,10 @@ export class PortfolioController {
   async addCoin(@Body() body: AddCoinDto, @Request() req) {
     const userId = req.user.userId;
     return await this.portfolioService.addCoin(body, userId);
+  }
+
+  @Post('add-transaction')
+  async addTransaction(@Body() body: AddTransactionDto) {
+    return await this.portfolioService.addTransaction(body);
   }
 }

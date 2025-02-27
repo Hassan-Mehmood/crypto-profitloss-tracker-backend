@@ -3,7 +3,11 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { AddCoinDto, CreatePortfolioDto } from './dto/portfolioControllerDto';
+import {
+  AddCoinDto,
+  AddTransactionDto,
+  CreatePortfolioDto,
+} from './dto/portfolioControllerDto';
 import { PrismaService } from 'src/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
@@ -100,6 +104,27 @@ export class PortfolioService {
     } catch (error) {
       console.log('Error adding coin to portfolio', error);
       throw new InternalServerErrorException('Error adding coin to portfolio');
+    }
+  }
+
+  async addTransaction(body: AddTransactionDto) {
+    try {
+      const transaction = await this.prisma.transaction.create({
+        data: {
+          type: body.type,
+          quantity: body.quantity,
+          price: body.price,
+          date: body.date,
+          holdingId: body.portfolioHoldingId,
+        },
+      });
+
+      return transaction;
+    } catch (error) {
+      console.log('Error adding transaction to portfolio', error);
+      throw new InternalServerErrorException(
+        'Error adding transaction to portfolio',
+      );
     }
   }
 }

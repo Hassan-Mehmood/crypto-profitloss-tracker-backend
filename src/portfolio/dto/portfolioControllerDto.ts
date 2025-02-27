@@ -14,5 +14,17 @@ export const addCoinDto = z.object({
   coinGeckoId: z.string(),
 });
 
+export const addTransaction = z.object({
+  type: z.enum(['BUY', 'SELL']),
+  quantity: z.number(),
+  price: z.number(),
+  portfolioHoldingId: z.string(),
+  coinId: z.string(),
+  date: z.string().datetime(),
+});
+
 export type CreatePortfolioDto = z.infer<typeof createPortfolioDto>;
 export type AddCoinDto = z.infer<typeof addCoinDto>;
+export type AddTransactionDto = z.infer<typeof addTransaction>;
+
+export type TransactionType = 'BUY' | 'SELL';
