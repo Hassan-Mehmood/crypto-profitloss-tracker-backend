@@ -11,7 +11,6 @@ export class SessionSerializer extends PassportSerializer {
     payload: any,
     done: (err: Error | null, payload: string) => void,
   ): any {
-    console.log('Payload', payload);
     done(null, payload);
   }
 }

@@ -9,8 +9,8 @@ import {
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from 'src/prisma.service';
-import { SignupUserDto } from './schemas/signupUserSchema';
-import { SigninUserDto } from './schemas/signinUserSchema';
+import { SignupUserDto } from './dto/signupUserDto';
+import { SigninUserDto } from './dto/signinUserDto';
 
 @Injectable()
 export class UsersService {

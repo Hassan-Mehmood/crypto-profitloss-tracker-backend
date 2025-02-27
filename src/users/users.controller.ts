@@ -8,8 +8,8 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ZodValidationPipe } from './pipes/zodValidationPipe';
-import { SignupUserDto, signupUserSchema } from './schemas/signupUserSchema';
+import { ZodValidationPipe } from '../pipes/zodValidationPipe';
+import { SignupUserDto, signupUserSchema } from './dto/signupUserDto';
 import { LocalAuthGuard } from 'src/auth/gaurds/local.auth.gaurd';
 import { AuthenticatedGuard } from 'src/auth/gaurds/authenticated.gaurd';
 
