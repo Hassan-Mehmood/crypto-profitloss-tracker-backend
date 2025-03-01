@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -25,10 +26,16 @@ export class PortfolioController {
     return await this.portfolioService.create(body, userId);
   }
 
-  @Get('get-all')
+  @Get('get-all-portfolios')
   async getAll(@Request() req) {
     const userId = req.user.userId;
     return await this.portfolioService.getAll(userId);
+  }
+
+  @Get('get-portfolio/:id')
+  async getPortfolio(@Request() req, @Param('id') id: string) {
+    const userId = req.user.userId;
+    return await this.portfolioService.getPortfolioById(id, userId);
   }
 
   // Implement edit portfolio name

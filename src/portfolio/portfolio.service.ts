@@ -55,6 +55,23 @@ export class PortfolioService {
     }
   }
 
+  async getPortfolioById(id: string, userId: string) {
+    try {
+      return await this.prisma.portfolio.findFirst({
+        where: {
+          id: id,
+          userId: userId,
+        },
+        include: {
+          holdings: true,
+        },
+      });
+    } catch (error) {
+      console.log('Error fetching portfolio by id', error);
+      throw new InternalServerErrorException('Error fetching portfolio by id');
+    }
+  }
+
   async addCoin(body: AddCoinDto, userId: string) {
     try {
       const [portfolio, coin] = await Promise.all([
